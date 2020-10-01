@@ -1,0 +1,25 @@
+{
+  "name": "@newchromantics/heizenradar_raymon_nodeserver",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "version": "0.0.1",
+  "main": "Bootup.js",
+  "dependencies": {
+    "@newchromantics/heizenradar_raymon": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NewChromantics/HeizenRadar_RayMon_NodeServer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NewChromantics/HeizenRadar_RayMon_NodeServer/issues"
+  },
+  "homepage": "https://github.com/NewChromantics/HeizenRadar_RayMon_NodeServer#readme"
+}
