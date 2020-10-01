@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -qq && \
     apt install -qq -y software-properties-common && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-    apt install -qq -y npm libx264-dev libjavascriptcoregtk-4.0-dev gcc-10 g++-10 kmscube git
+    apt install -qq -y npm libx264-dev libjavascriptcoregtk-4.0-dev gcc-10 g++-10 kmscube
 
 COPY . /home/app
 
