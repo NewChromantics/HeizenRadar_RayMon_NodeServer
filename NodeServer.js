@@ -8,7 +8,7 @@ const port = 3000;
 
 const server = http.createServer( ( req, res ) =>
 {
-	const Raymon = spawn("./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp", ["./"]);
+	const Raymon = spawn("./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp", ["./node_modules/@newchromantics/heizenradar_raymon/"]);
 	let log = "";
 	Raymon.stdout.on( "data", ( data ) =>
 	{
