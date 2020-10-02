@@ -111,4 +111,25 @@ app.post( '/upload', async ( req, res ) =>
 	}
 } );
 
+app.post( '/process', async ( req, res ) =>
+{
+	if( typeof req.body !== 'object')
+	{
+		return res.status( 400 ).send( 'JSON Object not uploaded.' );
+	}
+
+	// Expecting a json object like: {FilePath: "FilePath"}
+	// TODO Write a test for this;
+	console.log(req.body.FilePath);
+	RayDataFilename = req.body.FilePath;
+	if ( req.body.ObjPath )
+	{
+		SceneObjFilename = req.body.ObjPath;
+	}
+	else
+	{
+		SceneObjFilename = RaymonBootPath + "Assets/Room3.obj";
+	}
+	
+})
 app.listen( 3000, () => console.log( `Server running at http://${hostname}:${port}/` ) );
