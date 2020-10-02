@@ -1,5 +1,7 @@
 # HeizenRadar_RayMon_NodeServer
 
+## Uploading a File
+
 Currently the app works by responding to a file being posted to the server using the path `/upload`
 
 Using curl a wellformed request to the server looks like:
@@ -15,7 +17,7 @@ If a file is not uploaded a 400 code will be sent back with the message
 The form field must be 'data' otherwise the request will fail with
 `Wrong key value for the file upload, Needs to be "data"`
 
---Malformed Request--
+_Malformed Request_
 ```
 curl --location --request POST 'http://<IP>:<PORT>/upload' \
 --form 'Data=@/Users/user/<RayData>.txt'
@@ -26,29 +28,14 @@ curl --location --request POST 'http://<IP>:<PORT>/upload' \
 The app parses the file contents and will return a 400 code `Malformed Data: `
 with a complete log of the app run attached.
 
----
+## Sending a File Location Using JSON
 
-A node version of posting a file
+*Alternatively*
+
+It is possible to send JSON in the body of the post which then loads the Ray Data from the specified file in this JSON
+
 ```
-var request = require('request');
-var fs = require('fs');
-var options = {
-  'method': 'POST',
-  'url': 'http://<IP>:<PORT>/upload',
-  'headers': {
-  },
-  formData: {
-    'data': {
-      'value': fs.createReadStream('/Users/user/<RayData>.txt'),
-      'options': {
-        'filename': '<RayData>.txt',
-        'contentType': null
-      }
-    }
-  }
-};
-request(options, function (error, response) {
-  if (error) throw new Error(error);
-  console.log(response.body);
-});
+curl --location --request POST 'http:/<IP>:<PORT>/process' \
+--header 'Content-Type: application/json' \
+--data-raw '{"FilePath": "/Users/user/<RayData>.txt"}'
 ```
