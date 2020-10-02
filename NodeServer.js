@@ -6,7 +6,10 @@ const { spawn } = require( "child_process" );
 const hostname = '127.0.0.1';
 const port = 3000;
 
-app.use( fileUpload() );
+const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp"
+const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
+let RayDataFilename;
+let SceneObjFilename;
 
 // Middleware for JSON
 //app.use( express.json() );
@@ -14,7 +17,7 @@ app.use( fileUpload() );
 // Runs the Raymon app and sends back a zip of the data
 function RunAndRespond( res )
 {
-	const Raymon = spawn( "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp", [ "./node_modules/@newchromantics/heizenradar_raymon/" ] );
+	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}` ] );
 	let log = "";
 	let ZipFile = '';
 	Raymon.stdout.on( "data", ( data ) =>
