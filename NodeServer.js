@@ -1,4 +1,5 @@
-const express = require( 'express' )
+const os = require( 'os' );
+const express = require( 'express' );
 const fileUpload = require( 'express-fileupload' );
 const app = express()
 const { spawn } = require( "child_process" );
@@ -11,8 +12,13 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 
-// Middleware for JSON
-//app.use( express.json() );
+app.use(
+	fileUpload( {
+		useTempFiles: true,
+		tempFileDir: os.tmpdir()
+	} ),
+	express.json(),
+);
 
 // Runs the Raymon app and sends back a zip of the data
 function RunAndRespond( res )
@@ -77,20 +83,22 @@ app.post( '/upload', async ( req, res ) =>
 		return res.status( 400 ).send( 'No files were uploaded.' );
 	}
 
-	let RayData = req.files.data;
-
-	// Move the data to the correct location
 	try
 	{
-		RayData.mv( './node_modules/@newchromantics/heizenradar_raymon/Data.txt', ( err ) => 
+		RayDataFilename = req.files.data.tempFilePath;
+		// remove this if to force throw an error
+		if ( req.files.obj )
 		{
-			if ( err )
-				return res.status( 500 ).send( err );
-		} );
+			SceneObjFilename = req.files.obj.filePath;
+		}
+		else
+		{
+			SceneObjFilename = RaymonBootPath + "Assets/Room3.obj";
+		}
 	}
-	catch ( err )
+	catch ( error )
 	{
-		return res.status( 400 ).send( `Wrong key value for the file upload, Must be "data"`);
+		return res.status( 400 ).send( `Wrong key value for the file upload, Must be "data"` );
 	}
 
 
