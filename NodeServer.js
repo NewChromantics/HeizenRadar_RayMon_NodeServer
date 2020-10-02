@@ -8,7 +8,6 @@ const express = require('express')
 const app = express()
 
 app.get('/', (req, res) => {
-
 	const Raymon = spawn("./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp", ["./node_modules/@newchromantics/heizenradar_raymon/"]);
 	let log = "";
 	let ZipFile = '';
@@ -17,9 +16,15 @@ app.get('/', (req, res) => {
 		// TODO: Add ERROR or DEBUG to the js throws and use that to parse them here...
 		console.log( `stdout: ${data}` );
 		log += data;
+		let StringData = data.toString();
 
-		// if(data.startsWith("Zipname"))
-		// 	ZipFile = data.substring(11); // "Zipname: " = 11 characters
+		if(StringData.startsWith("Zipname"))
+		{
+			var Regex = /\w+.zip/
+			let RegexArray = Regex.exec(StringData);
+			console.log(RegexArray[0])
+			ZipFile = RegexArray[0]; // "Zipname: " = 9 characters
+		}
 	} );
 
 	Raymon.stderr.on( "stderr", ( stderr ) =>
@@ -42,12 +47,14 @@ app.get('/', (req, res) => {
 
 	Raymon.on( "close", ( code ) =>
 	{
-		console.log("close")
-		// res.statusCode = 200;
-		// res.setHeader( 'Content-Type', 'text/plain' );
-		// res.end( `result: ${log}` )
+		const filePath = `./node_modules/@newchromantics/heizenradar_raymon/${ZipFile}`;
 
-		const filePath = path.join(__dirname, "/node_modules/@newchromantics/heizenradar_raymon/", "RayMonOutput_3907835971.zip");
+		res.download(filePath)
+	} );
+	
+})
+
+app.post( '/', async ( req, res ) =>
 
 		res.download(filePath);
 
