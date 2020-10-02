@@ -43,18 +43,14 @@ function RunAndRespond( res )
 		{
 			Raymon.stdout.pause();
 			Raymon.kill();
-			res.statusCode = 400;
-			res.setHeader( 'Content-Type', 'text/plain' );
-			res.end( `Malformed Data: \n${log}` );
+			throw 'Malformed Data'
 		}
 	} );
 
 	Raymon.stderr.on( "stderr", ( stderr ) =>
 	{
 		log += stderr;
-		res.statusCode = 500;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( `stderr: \n${log}` );
+		throw 'stderr'
 	} );
 
 	Raymon.on( 'error', ( error ) =>
@@ -62,17 +58,21 @@ function RunAndRespond( res )
 		console.log( `error: ${error.message}` );
 
 		log += error.message;
-		res.statusCode = 500;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( `error: \n${log}` );
+		throw 'error'
 	} );
 
 	Raymon.on( "close", ( code ) =>
 	{
-		const filePath = `./node_modules/@newchromantics/heizenradar_raymon/${ZipFile}`;
+		const filePath = `${RaymonBootPath}${ZipFile}`;
 
 		res.download( filePath )
 
+		// TODO: Need to call res.end here but this block is also called when the process is killed on Malformed Data
+		// causing a clashing header error
+		/*
+			_http_outgoing.js:491
+				throw new Error('Can\'t set headers after they are sent.');
+		*/
 	} );
 }
 
@@ -101,8 +101,14 @@ app.post( '/upload', async ( req, res ) =>
 		return res.status( 400 ).send( `Wrong key value for the file upload, Must be "data"` );
 	}
 
-
-	RunAndRespond( res )
+	try
+	{
+		RunAndRespond( res )
+	}
+	catch ( error )
+	{
+		console.log( error );
+	}
 } );
 
 app.listen( 3000, () => console.log( `Server running at http://${hostname}:${port}/` ) );
