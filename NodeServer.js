@@ -12,6 +12,8 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 
+let log = "";
+
 app.use(
 	fileUpload( {
 		useTempFiles: true,
@@ -20,12 +22,29 @@ app.use(
 	express.json(),
 );
 
+function RunException(res, value) {
+	switch(value)
+	{
+		case "error":
+			res.statusCode = 500;
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end( `ERROR LOG: \n${log}` );
+			break;
+
+		case "Malformed Data":
+			res.statusCode = 400;
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end( `Malformed Data: \n${log}` );
+		break;
+	};
+}
+
 // Runs the Raymon app and sends back a zip of the data
 function RunAndRespond( res )
 {
 	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}` ] );
-	let log = "";
-	let ZipFile = '';
+	log = "";
+	let ZipFile = "";
 	Raymon.stdout.on( "data", ( data ) =>
 	{
 		console.log( `stdout: ${data}` );
@@ -41,24 +60,24 @@ function RunAndRespond( res )
 		}
 		else if( StringData.includes( "match count(null"))
 		{
-			Raymon.stdout.pause();
 			Raymon.kill();
-			throw 'Malformed Data'
+			RunException(res, 'Malformed Data')
 		}
 	} );
 
 	Raymon.stderr.on( "stderr", ( stderr ) =>
 	{
 		log += stderr;
-		throw 'stderr'
+
+		RunException(res, 'error')
 	} );
 
 	Raymon.on( 'error', ( error ) =>
 	{
 		console.log( `error: ${error.message}` );
-
 		log += error.message;
-		throw 'error'
+
+		RunException(res, 'error')
 	} );
 
 	Raymon.on( "close", ( code ) =>
@@ -67,12 +86,13 @@ function RunAndRespond( res )
 
 		res.download( filePath )
 
-		// TODO: Need to call res.end here but this block is also called when the process is killed on Malformed Data
-		// causing a clashing header error
+		// TODO: Test whether this causes a clashing header error
 		/*
 			_http_outgoing.js:491
 				throw new Error('Can\'t set headers after they are sent.');
 		*/
+		res.statusCode = 200;
+		res.end( )
 	} );
 }
 
@@ -86,7 +106,7 @@ app.post( '/upload', async ( req, res ) =>
 	try
 	{
 		RayDataFilename = req.files.data.tempFilePath;
-		// remove this if to force throw an error
+		// remove this if to throw an error if an object is not uploaded
 		if ( req.files.obj )
 		{
 			SceneObjFilename = req.files.obj.filePath;
@@ -130,6 +150,16 @@ app.post( '/process', async ( req, res ) =>
 	{
 		SceneObjFilename = RaymonBootPath + "Assets/Room3.obj";
 	}
-	
+
+	try
+	{
+		RunAndRespond( res )
+	}
+	catch ( error )
+	{
+		console.log( error );
+	}
+
 })
+
 app.listen( 3000, () => console.log( `Server running at http://${hostname}:${port}/` ) );
