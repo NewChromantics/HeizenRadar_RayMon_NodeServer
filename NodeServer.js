@@ -45,7 +45,7 @@ function RunAndRespond( res )
 		log += stderr;
 		res.statusCode = 500;
 		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( `error: ${log}` );
+		res.end( `stderr: \n${log}` );
 	} );
 
 	Raymon.on( 'error', ( error ) =>
@@ -55,7 +55,7 @@ function RunAndRespond( res )
 		log += error.message;
 		res.statusCode = 500;
 		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( `error: ${log}` );
+		res.end( `error: \n${log}` );
 	} );
 
 	Raymon.on( "close", ( code ) =>
@@ -87,7 +87,7 @@ app.post( '/upload', async ( req, res ) =>
 	}
 	catch ( err )
 	{
-		return res.status( 400 ).send( `Wrong key value for the file upload, Needs to be "data"`);
+		return res.status( 400 ).send( `Wrong key value for the file upload, Must be "data"`);
 	}
 
 
