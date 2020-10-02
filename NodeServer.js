@@ -1,20 +1,25 @@
-const http = require( 'http' );
-const fileSystem = require('fs');
 const path = require('path');
 const { spawn } = require( "child_process" );
 
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const server = http.createServer( ( req, res ) =>
-{
+const express = require('express')
+const app = express()
+
+app.get('/', (req, res) => {
+
 	const Raymon = spawn("./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp", ["./node_modules/@newchromantics/heizenradar_raymon/"]);
 	let log = "";
+	let ZipFile = '';
 	Raymon.stdout.on( "data", ( data ) =>
 	{
 		// TODO: Add ERROR or DEBUG to the js throws and use that to parse them here...
 		console.log( `stdout: ${data}` );
 		log += data;
+
+		// if(data.startsWith("Zipname"))
+		// 	ZipFile = data.substring(11); // "Zipname: " = 11 characters
 	} );
 
 	Raymon.stderr.on( "stderr", ( stderr ) =>
@@ -37,33 +42,19 @@ const server = http.createServer( ( req, res ) =>
 
 	Raymon.on( "close", ( code ) =>
 	{
-		res.statusCode = 200;
-		res.setHeader( 'Content-Type', 'text/plain' );
-		res.end( `result: ${log}` )
+		console.log("close")
+		// res.statusCode = 200;
+		// res.setHeader( 'Content-Type', 'text/plain' );
+		// res.end( `result: ${log}` )
 
-		/* TODO:: Parse the stdout for ZipFile: <Filename> */
+		const filePath = path.join(__dirname, "/node_modules/@newchromantics/heizenradar_raymon/", "RayMonOutput_3907835971.zip");
 
-		// let ZipFile = <Parsed Filename>
+		res.download(filePath);
 
-		// const filePath = path.join(__dirname, ZipFile);
-		// const stat = fileSystem.statSync( filePath );
-
-		// res.writeHead( 200, {
-		// 	'Content-Type': 'application/zip',
-		// 	'Content-Length': stat.size
-		// } );
-
-		// const readStream = fileSystem.createReadStream( filePath );
-		// readStream.pipe( res );
-		// res.end();
 	} );
-
-});
-
-server.listen( port, hostname, () =>
-{
-	console.log( `Server running at http://${hostname}:${port}/` );
-} );
+	
+})
+app.listen(3000, () => console.log( `Server running at http://${hostname}:${port}/` ));
 
 // Can increase the server timeout like this if needed
 // server.timeout = 20;

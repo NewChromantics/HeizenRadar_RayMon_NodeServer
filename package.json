@@ -6,7 +6,8 @@
   "version": "0.0.1",
   "main": "Bootup.js",
   "dependencies": {
-    "@newchromantics/heizenradar_raymon": "latest"
+    "@newchromantics/heizenradar_raymon": "0.0.3",
+    "express": "^4.17.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
