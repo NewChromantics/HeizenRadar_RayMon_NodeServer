@@ -19,5 +19,5 @@ RUN npm i
 
 RUN chmod +x node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp
 
-CMD [ "node", "NodeServer.js" ] 
+CMD [ "node", "./NodeServer.js" ] 
 
