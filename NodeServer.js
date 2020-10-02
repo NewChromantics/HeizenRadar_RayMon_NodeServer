@@ -19,7 +19,7 @@ function RunAndRespond( res )
 	let ZipFile = '';
 	Raymon.stdout.on( "data", ( data ) =>
 	{
-		// console.log( `stdout: ${data}` );
+		console.log( `stdout: ${data}` );
 		log += data;
 		let StringData = data.toString();
 
@@ -29,6 +29,14 @@ function RunAndRespond( res )
 			let RegexArray = Regex.exec( StringData );
 			console.log( RegexArray[ 0 ] )
 			ZipFile = RegexArray[ 0 ];
+		}
+		else if( StringData.includes( "match count(null"))
+		{
+			Raymon.stdout.pause();
+			Raymon.kill();
+			res.statusCode = 400;
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end( `Malformed Data: \n${log}` );
 		}
 	} );
 
