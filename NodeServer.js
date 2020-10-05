@@ -44,12 +44,6 @@ function ServerResponse(res, value) {
 			res.end( `ERROR LOG: \n${log}` );
 			break;
 
-		case "Malformed Data":
-			res.statusCode = 400;
-			res.setHeader( 'Content-Type', 'text/plain' );
-			res.end( `Malformed Data: \n${log}` );
-			break;
-
 		case "success":
 			res.statusCode = 200;
 			res.setHeader( 'Content-Type', 'text/plain' );
@@ -82,11 +76,6 @@ function RunApp( res )
 			let RegexArray = Regex.exec( StringData );
 			console.log( RegexArray[ 0 ] )
 			ZipFile = RegexArray[ 0 ];
-		}
-		else if( StringData.includes( "match count(null"))
-		{
-			Raymon.kill();
-			ServerResponse(res, 'Malformed Data')
 		}
 	} );
 
