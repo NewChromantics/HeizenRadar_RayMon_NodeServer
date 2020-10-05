@@ -4,7 +4,6 @@ const fileUpload = require( 'express-fileupload' );
 const app = express()
 const { spawn } = require( "child_process" );
 
-const hostname = '127.0.0.1';
 const port = 3000;
 
 const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp"
@@ -14,13 +13,14 @@ let SceneObjFilename;
 
 let log = "";
 
-app.use(
-	fileUpload( {
+app.use('/upload', fileUpload(
+	{
 		useTempFiles: true,
 		tempFileDir: os.tmpdir()
-	} ),
-	express.json(),
+	}),
 );
+
+app.use( '/process', express.json() );
 
 function ServerResponse(res, value) {
 	switch(value)
@@ -136,6 +136,7 @@ app.post( '/upload', async ( req, res ) =>
 
 app.post( '/process', async ( req, res ) =>
 {
+	console.log("here")
 	if( typeof req.body !== 'object')
 	{
 		return res.status( 400 ).send( 'JSON Object not uploaded.' );
@@ -165,4 +166,4 @@ app.post( '/process', async ( req, res ) =>
 
 })
 
-app.listen( 3000, () => console.log( `Server running at http://${hostname}:${port}/` ) );
+app.listen( port, () => console.log( `Server running port: ${port}/` ) );
