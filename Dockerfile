@@ -9,7 +9,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -qq && \
     apt install -qq -y software-properties-common && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-    apt install -qq -y npm libx264-dev libjavascriptcoregtk-4.0-dev gcc-10 g++-10 kmscube
+    apt install -qq -y npm libx264-dev libjavascriptcoregtk-4.0-dev gcc-10 g++-10 kmscube libgles2-mesa-dev
 
 COPY . /home/app
 
