@@ -49,11 +49,13 @@ function ServerResponse(res, value) {
 			res.setHeader( 'Content-Type', 'text/plain' );
 			res.end( `Malformed Data: \n${log}` );
 			break;
+
 		case "success":
 			res.statusCode = 200;
 			res.setHeader( 'Content-Type', 'text/plain' );
 			res.end("Success");
 			break;
+
 		case "timeout":
 			res.statusCode = 400;
 			res.setHeader( 'Content-Type', 'text/plain' );
@@ -63,7 +65,7 @@ function ServerResponse(res, value) {
 }
 
 // Runs the Raymon app and sends back a zip of the data
-function RunAndRespond( res )
+function RunApp( res )
 {
 	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}` ] );
 	log = "";
@@ -143,7 +145,7 @@ app.post( '/upload', async ( req, res ) =>
 
 	try
 	{
-		RunAndRespond( res )
+		RunApp( res )
 	}
 	catch ( error )
 	{
@@ -173,7 +175,7 @@ app.post( '/process', async ( req, res ) =>
 
 	try
 	{
-		RunAndRespond( res )
+		RunApp( res )
 	}
 	catch ( error )
 	{
