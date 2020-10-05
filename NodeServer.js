@@ -5,6 +5,7 @@ const app = express()
 const { spawn } = require( "child_process" );
 
 const port = 3000;
+const TimeOutLimit = 120000; // 2 mins
 
 const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp"
 const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
@@ -12,6 +13,18 @@ let RayDataFilename;
 let SceneObjFilename;
 
 let log = "";
+
+// Send log on timeout
+app.use( ( req, res, next ) =>
+{
+	res.setTimeout( TimeOutLimit, function ()
+	{
+		console.log( 'Request has timed out.' );
+		ServerResponse( res, "timeout" )
+	} );
+
+	next();
+} );
 
 app.use('/upload', fileUpload(
 	{
@@ -40,6 +53,11 @@ function ServerResponse(res, value) {
 			res.statusCode = 200;
 			res.setHeader( 'Content-Type', 'text/plain' );
 			res.end("Success");
+			break;
+		case "timeout":
+			res.statusCode = 400;
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end( `Request Timeout: \n${log}` );
 			break;
 	};
 }
