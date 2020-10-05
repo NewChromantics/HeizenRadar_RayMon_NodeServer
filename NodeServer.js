@@ -22,7 +22,7 @@ app.use(
 	express.json(),
 );
 
-function RunException(res, value) {
+function ServerResponse(res, value) {
 	switch(value)
 	{
 		case "error":
@@ -35,7 +35,16 @@ function RunException(res, value) {
 			res.statusCode = 400;
 			res.setHeader( 'Content-Type', 'text/plain' );
 			res.end( `Malformed Data: \n${log}` );
-		break;
+			break;
+		case "success":
+			// TODO: Test whether this causes a clashing header error
+			/*
+				_http_outgoing.js:491
+					throw new Error('Can\'t set headers after they are sent.');
+			*/
+			res.statusCode = 200;
+			res.end();
+			break;
 	};
 }
 
@@ -61,7 +70,7 @@ function RunAndRespond( res )
 		else if( StringData.includes( "match count(null"))
 		{
 			Raymon.kill();
-			RunException(res, 'Malformed Data')
+			ServerResponse(res, 'Malformed Data')
 		}
 	} );
 
@@ -69,7 +78,7 @@ function RunAndRespond( res )
 	{
 		log += stderr;
 
-		RunException(res, 'error')
+		ServerResponse(res, 'error')
 	} );
 
 	Raymon.on( 'error', ( error ) =>
@@ -77,7 +86,7 @@ function RunAndRespond( res )
 		console.log( `error: ${error.message}` );
 		log += error.message;
 
-		RunException(res, 'error')
+		ServerResponse(res, 'error')
 	} );
 
 	Raymon.on( "close", ( code ) =>
@@ -86,13 +95,7 @@ function RunAndRespond( res )
 
 		res.download( filePath )
 
-		// TODO: Test whether this causes a clashing header error
-		/*
-			_http_outgoing.js:491
-				throw new Error('Can\'t set headers after they are sent.');
-		*/
-		res.statusCode = 200;
-		res.end( )
+		ServerResponse(res, "success");
 	} );
 }
 
