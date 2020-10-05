@@ -116,7 +116,7 @@ app.post( '/upload', async ( req, res ) =>
 		}
 		else
 		{
-			SceneObjFilename = RaymonBootPath + "Assets/Room3.obj";
+			SceneObjFilename = "Assets/Room3.obj";
 		}
 	}
 	catch ( error )
@@ -151,7 +151,7 @@ app.post( '/process', async ( req, res ) =>
 	}
 	else
 	{
-		SceneObjFilename = RaymonBootPath + "Assets/Room3.obj";
+		SceneObjFilename = "Assets/Room3.obj";
 	}
 
 	try
