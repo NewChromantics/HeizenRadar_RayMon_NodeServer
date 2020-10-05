@@ -23,8 +23,6 @@ COPY . /home/app
 
 WORKDIR /home/app/
 
-RUN npm i
-
 RUN chmod +x node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp
 
 CMD [ "node", "./NodeServer.js" ] 
