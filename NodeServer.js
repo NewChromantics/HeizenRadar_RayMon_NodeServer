@@ -1,4 +1,5 @@
 const os = require( 'os' );
+const fs = require( 'fs' );
 const express = require( 'express' );
 const fileUpload = require( 'express-fileupload' );
 const app = express()
@@ -55,6 +56,12 @@ function ServerResponse(res, value) {
 			res.setHeader( 'Content-Type', 'text/plain' );
 			res.end( `Request Timeout: \n${log}` );
 			break;
+
+		case "nodata":
+			res.statusCode = 400;
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end( `No data: \n${log}` );
+			break;
 	};
 }
 
@@ -96,14 +103,25 @@ function RunApp( res )
 
 	Raymon.on( "close", ( code ) =>
 	{
-		if(code === 0)
-		{
+			console.log("Finished")
 			const filePath = `${RaymonBootPath}${ZipFile}`;
 
-			res.download( filePath )
-
-			ServerResponse(res, "success");
-		}
+			let stats  = fs.statSync(filePath);
+			if (stats.size < 23)
+			{
+				ServerResponse(res, "nodata")
+			}
+			else
+			{
+				res.download( filePath, e =>
+					{
+						if(e)
+						{
+							console.log(e);
+							ServerResponse(res, 'error')
+						}
+					})
+			}
 	} );
 }
 
@@ -149,9 +167,6 @@ app.post( '/process', async ( req, res ) =>
 		return res.status( 400 ).send( 'JSON Object not uploaded.' );
 	}
 
-	// Expecting a json object like: {FilePath: "FilePath"}
-	// TODO Write a test for this;
-	console.log(req.body.FilePath);
 	RayDataFilename = req.body.FilePath;
 	if ( req.body.ObjPath )
 	{
