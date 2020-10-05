@@ -23,11 +23,6 @@ curl --location --request POST 'http://<IP>:<PORT>/upload' \
 --form 'Data=@/Users/user/<RayData>.txt'
 ```
 
----
-
-The app parses the file contents and will return a 400 code `Malformed Data: `
-with a complete log of the app run attached.
-
 ## Sending a File Location Using JSON
 
 *Alternatively*
@@ -38,4 +33,11 @@ It is possible to send JSON in the body of the post which then loads the Ray Dat
 curl --location --request POST 'http:/<IP>:<PORT>/process' \
 --header 'Content-Type: application/json' \
 --data-raw '{"FilePath": "/Users/user/<RayData>.txt"}'
+```
+
+It is also possible to specify a .obj file using this method by specifying an `ObjPath`
+```
+curl --location --request POST 'http:/<IP>:<PORT>/process' \
+--header 'Content-Type: application/json' \
+--data-raw '{"FilePath": "/Users/user/<RayData>.txt", "ObjPath": "/Users/user/<Object>.obj}'
 ```
