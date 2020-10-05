@@ -37,13 +37,9 @@ function ServerResponse(res, value) {
 			res.end( `Malformed Data: \n${log}` );
 			break;
 		case "success":
-			// TODO: Test whether this causes a clashing header error
-			/*
-				_http_outgoing.js:491
-					throw new Error('Can\'t set headers after they are sent.');
-			*/
 			res.statusCode = 200;
-			res.end();
+			res.setHeader( 'Content-Type', 'text/plain' );
+			res.end("Success");
 			break;
 	};
 }
@@ -91,11 +87,14 @@ function RunAndRespond( res )
 
 	Raymon.on( "close", ( code ) =>
 	{
-		const filePath = `${RaymonBootPath}${ZipFile}`;
+		if(code === 0)
+		{
+			const filePath = `${RaymonBootPath}${ZipFile}`;
 
-		res.download( filePath )
+			res.download( filePath )
 
-		ServerResponse(res, "success");
+			ServerResponse(res, "success");
+		}
 	} );
 }
 
@@ -136,7 +135,6 @@ app.post( '/upload', async ( req, res ) =>
 
 app.post( '/process', async ( req, res ) =>
 {
-	console.log("here")
 	if( typeof req.body !== 'object')
 	{
 		return res.status( 400 ).send( 'JSON Object not uploaded.' );
