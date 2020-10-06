@@ -13,6 +13,7 @@ const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngine
 const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
+let ZipSaveLocation;
 
 let log = `Server Version: ${pjson.version}`;
 log += `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
@@ -70,7 +71,7 @@ function ServerResponse(res, value) {
 // Runs the Raymon app and sends back a zip of the data
 function RunApp( res )
 {
-	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}` ] );
+	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}`, `ZipSaveLocation=${ZipSaveLocation}` ] );
 	log = "";
 	let ZipFile = "";
 	Raymon.stdout.on( "data", ( data ) =>
@@ -170,6 +171,7 @@ app.post( '/process', async ( req, res ) =>
 	}
 
 	RayDataFilename = req.body.FilePath;
+	ZipSaveLocation = req.body.ZipOutputPath;
 	if ( req.body.ObjPath )
 	{
 		SceneObjFilename = req.body.ObjPath;
