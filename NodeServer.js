@@ -5,6 +5,7 @@ const fileUpload = require( 'express-fileupload' );
 const app = express()
 const { spawn } = require( "child_process" );
 
+const pjson = require('./package.json');
 const port = 3000;
 const TimeOutLimit = 120000; // 2 mins
 
@@ -13,7 +14,7 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 
-let log = "";
+let log = `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
 
 // Send log on timeout
 app.use( ( req, res, next ) =>
