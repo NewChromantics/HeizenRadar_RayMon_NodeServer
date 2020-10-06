@@ -14,7 +14,8 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 
-let log = `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
+let log = `Server Version: ${pjson.version}`;
+log += `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
 
 // Send log on timeout
 app.use( ( req, res, next ) =>
