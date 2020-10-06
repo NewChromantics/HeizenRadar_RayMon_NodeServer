@@ -32,12 +32,37 @@ It is possible to send JSON in the body of the post which then loads the Ray Dat
 ```
 curl --location --request POST 'http:/<IP>:<PORT>/process' \
 --header 'Content-Type: application/json' \
---data-raw '{"FilePath": "/Users/user/<RayData>.txt"}'
+--data-raw '
+  { \
+    "FilePath": "/Users/user/<RayData>.txt" \
+  }'
 ```
 
 It is also possible to specify a .obj file using this method by specifying an `ObjPath`
 ```
 curl --location --request POST 'http:/<IP>:<PORT>/process' \
 --header 'Content-Type: application/json' \
---data-raw '{"FilePath": "/Users/user/<RayData>.txt", "ObjPath": "/Users/user/<Object>.obj}'
+--data-raw '
+  { \
+    "FilePath": "/Users/user/<RayData>.txt", \
+    "ObjPath": "/Users/user/<Object>.obj" \
+  }'
 ```
+
+Using this same method you can also specify an output Filename and Location
+for the zip data by specifying a `ZipOutputPath`
+```
+curl --location --request POST 'http:/<IP>:<PORT>/process' \
+--header 'Content-Type: application/json' \
+--data-raw ' \
+  { \
+    "FilePath": "/Users/user/<RayData>.txt", \
+    "ObjPath": "/Users/user/<Object>.obj", \
+    "ZipOutputPath": "/Users/user/<FileName>.zip" \
+  }'
+```
+
+*NOTE* This file name must end with `.zip`
+
+If a ZipOutputPath is not specified then a unique zipfile is made with `RayMonOutput_${GetTimeNowMs()}.zip`
+and stored in the base folder of the app
