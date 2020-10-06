@@ -6,7 +6,7 @@
   "version": "0.0.3",
   "main": "Bootup.js",
   "dependencies": {
-    "@newchromantics/heizenradar_raymon": "latest",
+    "@newchromantics/heizenradar_raymon": "^0.0.8",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0"
   },
