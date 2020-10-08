@@ -79,7 +79,8 @@ function RunApp( res )
 		`ZipSaveLocation=${ZipSaveLocation}`,
 		`TimeOfRun=${Date()}`,
 		`ServerVersion=${pjson.version}`,
-		`SeverDependencies=${pjson.dependencies}`
+		`SeverDependencies=${pjson.dependencies}`,
+		`NodeVersion=${process.versions.node}`
 	] );
 	log = "";
 	let ZipFile = "";
