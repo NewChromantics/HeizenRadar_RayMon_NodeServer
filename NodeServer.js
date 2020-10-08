@@ -71,11 +71,15 @@ function ServerResponse(res, value) {
 // Runs the Raymon app and sends back a zip of the data
 function RunApp( res )
 {
+	// All executables are added as part of the final meta data file
 	const Raymon = spawn( PopExe, [
 		RaymonBootPath,
 		`RayDataFilename=${RayDataFilename}`,
 		`ObjFilename=${SceneObjFilename}`,
-		`ZipSaveLocation=${ZipSaveLocation}`
+		`ZipSaveLocation=${ZipSaveLocation}`,
+		`TimeOfRun=${Date()}`,
+		`ServerVersion=${pjson.version}`,
+		`SeverDependencies=${pjson.dependencies}`
 	] );
 	log = "";
 	let ZipFile = "";
