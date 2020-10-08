@@ -71,7 +71,12 @@ function ServerResponse(res, value) {
 // Runs the Raymon app and sends back a zip of the data
 function RunApp( res )
 {
-	const Raymon = spawn( PopExe, [ RaymonBootPath, `RayDataFilename=${RayDataFilename}`, `ObjFilename=${SceneObjFilename}`, `ZipSaveLocation=${ZipSaveLocation}` ] );
+	const Raymon = spawn( PopExe, [
+		RaymonBootPath,
+		`RayDataFilename=${RayDataFilename}`,
+		`ObjFilename=${SceneObjFilename}`,
+		`ZipSaveLocation=${ZipSaveLocation}`
+	] );
 	log = "";
 	let ZipFile = "";
 	Raymon.stdout.on( "data", ( data ) =>
