@@ -14,6 +14,8 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 let ZipSaveLocation;
+let TempDirectory;
+let DeleteFiles;
 
 let log = `Server Version: ${pjson.version}`;
 log += `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
@@ -182,6 +184,12 @@ app.post( '/process', async ( req, res ) =>
 
 	RayDataFilename = req.body.FilePath;
 	ZipSaveLocation = req.body.ZipOutputPath;
+	TempDirectory = req.body.TempDirectory || "./";
+	if(TempDirectory)
+		TempDirectory = TempDirectory.endsWith("/") ? TempDirectory : TempDirectory + "/"
+
+	DeleteFiles = req.body.TempDirectory;
+
 	if ( req.body.ObjPath )
 	{
 		SceneObjFilename = req.body.ObjPath;
@@ -194,6 +202,14 @@ app.post( '/process', async ( req, res ) =>
 	try
 	{
 		RunApp( res )
+
+		let OutputFolder = ZipSaveLocation.replace(/\.[^/.]+$/, "");
+
+		if(TempDirectory)
+			fs.renameSync(OutputFolder, `${TempDirectory}${ZipSaveLocation}`)
+
+		if(DeleteFiles)
+			fs.unlinkSync(OutputFolder)
 	}
 	catch ( error )
 	{
