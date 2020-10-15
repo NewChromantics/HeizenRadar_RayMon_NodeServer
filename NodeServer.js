@@ -102,6 +102,7 @@ function RunApp( res )
 		`SeverDependencies=${pjson.dependencies}`,
 		`NodeVersion=${process.versions.node}`
 	] );
+	
 	log = "";
 	let ZipFile = "";
 	Raymon.stdout.on( "data", ( data ) =>
@@ -119,11 +120,21 @@ function RunApp( res )
 		}
 	} );
 
-	Raymon.stderr.on( "stderr", ( stderr ) =>
+	Raymon.stderr.on( 'data', ( data ) =>
 	{
-		log += stderr;
+		console.log( `stderr: ${data}` );
+		log += data;
 
-		ServerResponse(res, 'error')
+		let StringData = data.toString();
+
+		if ( StringData.startsWith( "Zipname" ) )
+		{
+			console.log(StringData)
+			var Regex = /\w+.zip/
+			let RegexArray = Regex.exec( StringData );
+			console.log( RegexArray[ 0 ] )
+			ZipFile = RegexArray[ 0 ];
+		}
 	} );
 
 	Raymon.on( 'error', ( error ) =>
@@ -137,16 +148,15 @@ function RunApp( res )
 	Raymon.on( "close", ( code ) =>
 	{
 			console.log("Finished")
-			const filePath = `${RaymonBootPath}${ZipFile}`;
 
-			let stats  = fs.statSync(filePath);
-			if (stats.size < 23)
+			let stats  = fs.statSync(ZipSaveLocation);
+			if (stats.size < 23) // an empty zip has a file size of 22
 			{
 				ServerResponse(res, "nodata")
 			}
 			else
 			{
-				res.download( filePath, e =>
+				res.download( ZipSaveLocation, e =>
 					{
 						if(e)
 						{
