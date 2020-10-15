@@ -1,9 +1,10 @@
 const os = require( 'os' );
 const fs = require( 'fs' );
+const mv = require( 'mv' );
 const express = require( 'express' );
 const fileUpload = require( 'express-fileupload' );
 const app = express()
-const { spawn } = require( "child_process" );
+const { spawn, execSync } = require( "child_process" );
 
 const pjson = require('./package.json');
 const port = 3000;
@@ -68,6 +69,23 @@ function ServerResponse(res, value) {
 			res.end( `No data: \n${log}` );
 			break;
 	};
+}
+
+function CleanTempFiles()
+{
+	let OutputFolder = ZipSaveLocation.replace(/\.[^/.]+$/, "");
+	if(TempDirectory)
+	{
+		console.log(`Moving Temp files to ${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`)
+		mv(OutputFolder, `${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`, {mkdirp: true}, function(err) {
+			console.log(err);
+		});
+	}
+	else if(DeleteFiles)
+	{
+		console.log(`Deleting Temp files`)
+		execSync(`rm -rf ${OutputFolder}`)
+	}
 }
 
 // Runs the Raymon app and sends back a zip of the data
@@ -136,6 +154,8 @@ function RunApp( res )
 							ServerResponse(res, 'error')
 						}
 					})
+
+				CleanTempFiles();
 			}
 	} );
 }
@@ -184,11 +204,8 @@ app.post( '/process', async ( req, res ) =>
 
 	RayDataFilename = req.body.FilePath;
 	ZipSaveLocation = req.body.ZipOutputPath;
-	TempDirectory = req.body.TempDirectory || "./";
-	if(TempDirectory)
-		TempDirectory = TempDirectory.endsWith("/") ? TempDirectory : TempDirectory + "/"
-
-	DeleteFiles = req.body.TempDirectory;
+	TempDirectory = req.body.TempDirectory || "";
+	DeleteFiles = req.body.DeleteFiles || "";
 
 	if ( req.body.ObjPath )
 	{
@@ -202,14 +219,6 @@ app.post( '/process', async ( req, res ) =>
 	try
 	{
 		RunApp( res )
-
-		let OutputFolder = ZipSaveLocation.replace(/\.[^/.]+$/, "");
-
-		if(TempDirectory)
-			fs.renameSync(OutputFolder, `${TempDirectory}${ZipSaveLocation}`)
-
-		if(DeleteFiles)
-			fs.unlinkSync(OutputFolder)
 	}
 	catch ( error )
 	{
