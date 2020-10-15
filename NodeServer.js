@@ -7,7 +7,7 @@ const { spawn } = require( "child_process" );
 
 const pjson = require('./package.json');
 const port = 3000;
-const TimeOutLimit = 120000; // 2 mins
+const TimeOutLimit = 5 * 60 * 1000; // 5 mins
 
 const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp"
 const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
