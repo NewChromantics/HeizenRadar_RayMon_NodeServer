@@ -69,7 +69,7 @@ and stored in the base folder of the app
 
 ---
 
-There is also the option to either move or delete the temporary files produced during a run.
+There is also the option to either move OR delete the temporary files produced during a run.
 
 Neither of these options will affect the Zip file.
 
@@ -94,3 +94,5 @@ To *Delete* add a non empty `DeleteFiles` variable
     "DeleteFiles": "true"  \
   }'
 ```
+
+If both options are given TempDirectory will take precedence and delete will be ignored
