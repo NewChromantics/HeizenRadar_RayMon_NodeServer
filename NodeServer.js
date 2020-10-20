@@ -77,8 +77,10 @@ function CleanTempFiles()
 	if(TempDirectory)
 	{
 		console.log(`Moving Temp files to ${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`)
-		mv(OutputFolder, `${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`, {mkdirp: true}, function(err) {
-			console.log(err);
+		mv(OutputFolder, `${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`, {mkdirp: true, clobber: true},
+		(error) =>
+		{
+			console.log(error);
 		});
 	}
 	else if(DeleteFiles)
