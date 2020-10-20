@@ -85,7 +85,7 @@ To *Move* add a `TempDirectory` variable to the json sent to the server
 ```
 
 To *Delete* add a non empty `DeleteFiles` variable
-
+```
 --data-raw ' \
   { \
     "FilePath": "/Users/user/<RayData>.txt", \
