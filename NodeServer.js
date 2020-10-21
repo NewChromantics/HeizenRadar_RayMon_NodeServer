@@ -15,8 +15,6 @@ const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
 let RayDataFilename;
 let SceneObjFilename;
 let ZipSaveLocation;
-let TempDirectory;
-let DeleteFiles;
 
 let log = `Server Version: ${pjson.version}`;
 log += `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
@@ -69,25 +67,6 @@ function ServerResponse(res, value) {
 			res.end( `No data: \n${log}` );
 			break;
 	};
-}
-
-function CleanTempFiles()
-{
-	let OutputFolder = ZipSaveLocation.replace(/\.[^/.]+$/, "");
-	if(TempDirectory)
-	{
-		console.log(`Moving Temp files to ${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`)
-		mv(OutputFolder, `${TempDirectory}${OutputFolder.slice(OutputFolder.lastIndexOf("/"))}`, {mkdirp: true, clobber: true},
-		(error) =>
-		{
-			console.log(error);
-		});
-	}
-	else if(DeleteFiles)
-	{
-		console.log(`Deleting Temp files`)
-		execSync(`rm -rf ${OutputFolder}`)
-	}
 }
 
 // Runs the Raymon app and sends back a zip of the data
@@ -166,8 +145,6 @@ function RunApp( res )
 							ServerResponse(res, 'error')
 						}
 					})
-
-				CleanTempFiles();
 			}
 	} );
 }
@@ -216,8 +193,6 @@ app.post( '/process', async ( req, res ) =>
 
 	RayDataFilename = req.body.FilePath;
 	ZipSaveLocation = req.body.ZipOutputPath;
-	TempDirectory = req.body.TempDirectory || "";
-	DeleteFiles = req.body.DeleteFiles || "";
 
 	if ( req.body.ObjPath )
 	{

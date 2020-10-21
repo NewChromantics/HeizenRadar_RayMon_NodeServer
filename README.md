@@ -69,30 +69,4 @@ and stored in the base folder of the app
 
 ---
 
-There is also the option to either move OR delete the temporary files produced during a run.
-
-Neither of these options will affect the Zip file.
-
-To *Move* add a `TempDirectory` variable to the json sent to the server
-```
---data-raw ' \
-  { \
-    "FilePath": "/Users/user/<RayData>.txt", \
-    "ObjPath": "/Users/user/<Object>.obj", \
-    "ZipOutputPath": "/Users/user/<FileName>.zip", \
-    "TempDirectory": "/Users/temp"  \
-  }'
-```
-
-To *Delete* add a non empty `DeleteFiles` variable
-```
---data-raw ' \
-  { \
-    "FilePath": "/Users/user/<RayData>.txt", \
-    "ObjPath": "/Users/user/<Object>.obj", \
-    "ZipOutputPath": "/Users/user/<FileName>.zip", \
-    "DeleteFiles": "true"  \
-  }'
-```
-
-If both options are given TempDirectory will take precedence and delete will be ignored
+Only the Zip File will be saved
