@@ -128,24 +128,17 @@ function RunApp( res )
 
 	Raymon.on( "close", ( code ) =>
 	{
-			console.log("Finished")
+		console.log("Finished")
 
-			let stats  = fs.statSync(ZipSaveLocation);
-			if (stats.size < 23) // an empty zip has a file size of 22
+		res.download( ZipSaveLocation, e =>
 			{
-				ServerResponse(res, "nodata")
-			}
-			else
-			{
-				res.download( ZipSaveLocation, e =>
-					{
-						if(e)
-						{
-							console.log(e);
-							ServerResponse(res, 'error')
-						}
-					})
-			}
+				if(e)
+				{
+					console.log(e);
+					ServerResponse(res, 'error')
+				}
+			})
+
 	} );
 }
 
