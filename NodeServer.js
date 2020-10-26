@@ -1,5 +1,5 @@
 const os = require( 'os' );
-const fs = require( 'fs' );
+const path = require('path')
 const mv = require( 'mv' );
 const express = require( 'express' );
 const fileUpload = require( 'express-fileupload' );
@@ -185,7 +185,7 @@ app.post( '/process', async ( req, res ) =>
 	}
 
 	RayDataFilename = req.body.FilePath;
-	ZipSaveLocation = req.body.ZipOutputPath;
+	ZipSaveLocation = path.resolve(req.body.ZipOutputPath);
 
 	if ( req.body.ObjPath )
 	{
