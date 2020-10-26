@@ -1,10 +1,9 @@
 const os = require( 'os' );
 const path = require('path')
-const mv = require( 'mv' );
 const express = require( 'express' );
 const fileUpload = require( 'express-fileupload' );
 const app = express()
-const { spawn, execSync } = require( "child_process" );
+const { spawn } = require( "child_process" );
 
 const pjson = require('./package.json');
 const port = 3000;
