@@ -5,8 +5,7 @@ on:
     tags:
       - v*
   workflow_dispatch:
-    inputs:
-      name: Trigger New Docker Build
+
 
 jobs:
   publish:
