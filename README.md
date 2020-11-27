@@ -1,4 +1,4 @@
-# HeizenRadar_RayMon_NodeServer
+# HeizenRadar RayMon NodeServer
 
 ## Creating a Release
 
