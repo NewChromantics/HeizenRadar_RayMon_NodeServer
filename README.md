@@ -12,7 +12,7 @@ To make a new release first update and commit the version number in `package.jso
 
 Next add a tag to that commit with the formatting of `v` followed by the version number ie `v0.0.9`
 
-Once you push this tag to the repo the github workflow will trigger a build and release a new Docker Image with the tag of the version number of the tag pushed to trigger the workflow ie `v0.0.9` using the latest Ray Monitor package.
+Once you push this tag to the repo the github workflow will trigger a build and release a new Docker Image with the tag of the version number of the tag pushed to trigger the workflow ie `raymon-server-image v0.0.9` using the latest Ray Monitor package.
 
 ### Raymon Monitor Update
 
@@ -20,7 +20,7 @@ The second is when the base Raymon Package has been updated but updating the Nod
 
 To do this navigate to the `Actions` section of the repository and click on the [Create Image](https://github.com/NewChromantics/HeizenRadar_RayMon_NodeServer/actions?query=workflow%3A%22Create+Image%22) workflow.
 
-Clicking the `Run Workflow` button on this page will will trigger a build and release a new Docker Image with the tag `latest` using the latest Ray Monitor package. 
+Clicking the `Run Workflow` button on this page will will trigger a build and release a new Docker Image with the tag `raymon-server-image latest` using the latest Ray Monitor package. 
 
 ## Uploading a File
 
