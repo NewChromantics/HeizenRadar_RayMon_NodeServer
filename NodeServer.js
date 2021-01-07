@@ -10,10 +10,12 @@ const port = 3000;
 const TimeOutLimit = 5 * 60 * 1000; // 5 mins
 
 const PopExe = "./node_modules/@newchromantics/popengine/ubuntu-latest/PopEngineTestApp"
-const RaymonBootPath = "./node_modules/@newchromantics/heizenradar_raymon/"
+const RaymonBootPath = "/test/"
 let RayDataFilename;
 let SceneObjFilename;
 let ZipSaveLocation;
+let RunId;
+let ProcessIds = {};
 
 let log = `Server Version: ${pjson.version}`;
 log += `HeizenRadar Raymon Version: ${pjson.dependencies["@newchromantics/heizenradar_raymon"]}\n`;
@@ -82,9 +84,12 @@ function RunApp( res )
 		`SeverDependencies=${pjson.dependencies}`,
 		`NodeVersion=${process.versions.node}`
 	] );
-	
+
+	ProcessIds[RunId] = [];
 	log = "";
 	let ZipFile = "";
+	var ProgressRegex = /^([0-9]+\.?[0-9]*)% <(.*)>/;
+
 	Raymon.stdout.on( "data", ( data ) =>
 	{
 		console.log( `stdout: ${data}` );
@@ -98,6 +103,7 @@ function RunApp( res )
 			console.log( RegexArray[ 0 ] )
 			ZipFile = RegexArray[ 0 ];
 		}
+
 	} );
 
 	Raymon.stderr.on( 'data', ( data ) =>
@@ -114,6 +120,16 @@ function RunApp( res )
 			let RegexArray = Regex.exec( StringData );
 			console.log( RegexArray[ 0 ] )
 			ZipFile = RegexArray[ 0 ];
+		}
+
+		if ( StringData.startsWith( "ProgressReport:" ))
+		{
+			StringData = StringData.slice(StringData.indexOf(":") + 1)
+			let RegexResult = ProgressRegex.exec( StringData );
+			console.log(StringData)
+			console.log( RegexResult );
+			ProcessIds[RunId] = [RegexResult[ 1 ], RegexResult[ 2 ]];
+			console.log(ProcessIds[RunId]);
 		}
 	} );
 
@@ -185,6 +201,7 @@ app.post( '/process', async ( req, res ) =>
 
 	RayDataFilename = req.body.FilePath;
 	ZipSaveLocation = path.resolve(req.body.ZipOutputPath);
+	RunId = req.body.id;
 
 	if ( req.body.ObjPath )
 	{
@@ -204,6 +221,10 @@ app.post( '/process', async ( req, res ) =>
 		console.log( error );
 	}
 
+})
+app.get( '/progress/:processId', async ( req, res ) =>
+{
+	res.send(ProcessIds[req.params.processId]);
 })
 
 app.listen( port, () => console.log( `Server running port: ${port}/` ) );
